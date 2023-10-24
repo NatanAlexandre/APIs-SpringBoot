@@ -27,6 +27,10 @@ public class Task {
     @Size(min = 1, max = 255)
     private String description;
 
+    public Task(){
+
+    };
+
     public Task(Long id, User user, String description) {
         this.id = id;
         this.user = user;
