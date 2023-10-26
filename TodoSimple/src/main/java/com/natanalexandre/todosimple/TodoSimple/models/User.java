@@ -3,6 +3,7 @@ package com.natanalexandre.todosimple.TodoSimple.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,12 +32,13 @@ public class User {
     @Size(groups = CreateUser.class, min = 2, max = 100)
     private String username;
 
+    @Column(name = "password", length = 60, nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(name = "password", length = 60, nullable = false, unique = true)
-    @NotNull(groups = {CreateUser.class, UpdateUser.class})
-    @NotEmpty(groups = {CreateUser.class, UpdateUser.class})
-    @Size(groups = {CreateUser.class, UpdateUser.class}, min = 8, max = 60)
+    @NotNull(groups = CreateUser.class)
+    @NotEmpty(groups = CreateUser.class)
+    @Size(min = 8, max = 60)
     private String password;
+
 
     @OneToMany(mappedBy = "user")
     private List<Task> tasks = new ArrayList<Task>();
