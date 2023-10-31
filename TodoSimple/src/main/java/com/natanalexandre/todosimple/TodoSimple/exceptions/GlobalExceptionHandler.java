@@ -1,5 +1,7 @@
 package com.natanalexandre.todosimple.TodoSimple.exceptions;
 
+import com.natanalexandre.todosimple.TodoSimple.services.exceptions.DataBindingViolationException;
+import com.natanalexandre.todosimple.TodoSimple.services.exceptions.ObjectNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -65,6 +67,39 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 errorMessage,
                 HttpStatus.CONFLICT,
                 request);
+    }
+
+    @ExceptionHandler(ObjectNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Object> handleObjectNotFoundException(
+            ObjectNotFoundException objectNotFoundException,
+            WebRequest request){
+        log.error("Failed to find the requested element", objectNotFoundException);
+        return buildErrorResponse(
+                objectNotFoundException,
+                HttpStatus.NOT_FOUND,
+                request);
+    }
+
+    @ExceptionHandler(DataBindingViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Object> handleDataBindingViolationException(
+            DataBindingViolationException dataBindingViolationException,
+            WebRequest request
+    ){
+        log.error("Failed to save entity with associated data", dataBindingViolationException);
+        return buildErrorResponse(
+                dataBindingViolationException,
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
+    private ResponseEntity<Object> buildErrorResponse(
+            Exception exception,
+            HttpStatus httpStatus,
+            WebRequest request) {
+        return buildErrorResponse(exception, exception.getMessage(), httpStatus, request);
     }
 
     private ResponseEntity<Object> buildErrorResponse(
